@@ -10,13 +10,19 @@ class Server:
         self.core = Flask(name)
         self.b_crypt = Bcrypt(self.core)
         self.running = True
-        self.db = sqlite3.connect("shared/userDB")
+        self.file = sqlite3.connect("shared/userDB")
+        self.db = self.file.cursor()
 
         self.db.execute("""
-        CREATE TABLE IF NOT EXISTS USERS (
+        CREATE TABLE IF NOT EXISTS users (
             username TEXT,
             password TEXT,
+            userUUID TEXT,
             clientToken TEXT,
             accessToken TEXT
         )
         """)
+        self.file.commit()
+
+    def close_server(self):
+        self.db.close()

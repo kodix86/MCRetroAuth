@@ -31,6 +31,16 @@ elif args.mode == "register":
         print("Tried to register a user, but did not supply either a username, or a password?")
         exit_val = 2
 
+elif args.mode == "login":
+    solo = solo.Solo("3rd Party MC auth server")
+    print("Attempting login locally! (Test Purposes Only!)")
+
+    if args.username is not None and args.password is not None:
+        exit_val = solo.login(args.username, args.password)
+    else:
+        print("Tried to login a user, but did not supply either a username, or a password?")
+        exit_val = 2
+
 elif args.mode == "proxy":
     proxy = proxy.Proxy("Proxy for official Mojang auth servers, with added features")
     print("Running as a proxy! (currently unimplemented)")
