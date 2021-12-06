@@ -13,13 +13,13 @@ parser.add_argument("-p", "--password", help="Password to register")
 
 args = parser.parse_args()
 
-exit_val = 1
+exit_val = -1
 
 if args.mode == "solo":
     solo = solo.Solo("3rd Party MC auth server")
     print("Running in solo mode! (currently unimplemented)")
 
-    # exit_val = solo.server_handle()
+    exit_val = solo.server_handle()
 
 elif args.mode == "register":
     solo = solo.Solo("3rd Party MC auth server")

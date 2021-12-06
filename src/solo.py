@@ -1,7 +1,6 @@
 #!/usr/bin/false
-from flask import Flask
-from flask_bcrypt import Bcrypt
 from uuid import uuid4
+from os.path import exists
 
 from server import Server
 
@@ -20,14 +19,14 @@ class Solo(Server):
         if not result:
             reg_command = 'INSERT INTO users (username, password, userUUID) VALUES(?, ?, ?)'
             hashed_pass = self.b_crypt.generate_password_hash(password).decode('utf-8')
-            new_uuid = uuid4()
+            new_uuid = str(uuid4())
 
             data = [
-                username, hashed_pass, str(new_uuid)
+                username, hashed_pass, new_uuid
             ]
 
             print("Adding user with name \"" + username + "\" and password hash of \"" + hashed_pass + "\"")
-            print("New player was also assigned the following uuid: " + str(new_uuid))
+            print("New player was also assigned the following uuid: " + new_uuid)
 
             self.db.execute(reg_command, data)
             self.file.commit()
@@ -59,8 +58,44 @@ class Solo(Server):
             return 1
 
     def server_handle(self):
+        @self.core.route('/')
+        def handle_base():
+            if exists("shared/page.html"):
+                file = open("shared/page.html", "r")
+                content = file.read()
+                file.close()
+
+                return content
+            else:
+                return "Simple MC Auth Server"
+
         @self.core.route('/authenticate', methods=["POST"])
-        def handle_auth():
+        def handle_authenticate():
             ...
 
+        @self.core.route('/refresh', methods=["POST"])
+        def handle_refresh():
+            ...
+
+        @self.core.route('/validate', methods=["POST"])
+        def handle_validate():
+            ...
+
+        @self.core.route('/signout', methods=["POST"])
+        def handle_signout():
+            ...
+
+        @self.core.route('/validate', methods=["POST"])
+        def handle_invalidate():
+            ...
+
+        @self.core.route('/', methods=["POST"])
+        def handle_legacy_authenticate():
+            ...
+
+        @self.core.route('/session', methods=["POST"])
+        def handle_legacy_session():
+            ...
+
+        self.core.run()  # Start hosting the server!
         return 0
