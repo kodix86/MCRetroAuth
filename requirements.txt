@@ -1,0 +1,4 @@
+Flask~=2.0.2
+flask_jwt_extended
+flask_bcrypt
+requests~=2.26.0

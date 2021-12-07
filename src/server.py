@@ -1,3 +1,5 @@
+#!/usr/bin/false
+
 import requests
 from flask import Flask, request
 from flask_bcrypt import Bcrypt

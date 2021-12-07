@@ -1,8 +1,10 @@
 #!/usr/bin/false
+
 from uuid import uuid4
 from os.path import exists
 
 from server import Server
+from exit import ExitStatus
 
 
 class Solo(Server):
@@ -31,11 +33,11 @@ class Solo(Server):
             self.db.execute(reg_command, data)
             self.file.commit()
 
-            return 0
+            return ExitStatus.success
 
         else:
             print("User \"" + username + "\" already exists...")
-            return 1
+            return ExitStatus.invalid_username
 
     def login(self, username: str, password: str):
         reg_command = 'SELECT * FROM users WHERE username = ?'
@@ -52,10 +54,14 @@ class Solo(Server):
             print(result[0])
             print("Password is correct?: " + str(pw_correct))
 
-            return not pw_correct
+            if pw_correct:
+                return ExitStatus.success
+            else:
+                return ExitStatus.auth_failure
+
         else:
             print("User does not exist!")
-            return 1
+            return ExitStatus.invalid_username
 
     def server_handle(self):
         @self.core.route('/')
@@ -98,4 +104,4 @@ class Solo(Server):
             ...
 
         self.core.run()  # Start hosting the server!
-        return 0
+        return ExitStatus.success
