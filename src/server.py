@@ -4,7 +4,6 @@ import requests
 from flask import Flask, request
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
-from flask_sslify import SSLify
 import sqlite3
 
 
@@ -14,7 +13,6 @@ class Server:
         self.name = name
         self.core = Flask(name)
         self.core.config['SECRET_KEY'] = 'super-secret'  # REPLACE ME!
-        self.sslify = SSLify(self.core)
         self.b_crypt = Bcrypt(self.core)
         self.jwt = JWTManager(self.core)
         self.running = True

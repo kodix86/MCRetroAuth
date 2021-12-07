@@ -3,6 +3,9 @@
 from uuid import uuid4
 from os.path import exists
 
+from flask import request
+import json
+
 from server import Server
 from exit import ExitStatus
 
@@ -64,6 +67,7 @@ class Solo(Server):
             return ExitStatus.invalid_username
 
     def server_handle(self):
+        # Shared
         @self.core.route('/')
         def handle_base():
             if exists("shared/page.html"):
@@ -75,9 +79,27 @@ class Solo(Server):
             else:
                 return "Simple MC Auth Server"
 
+        # Modern Auth AKA YGGDRASIL
         @self.core.route('/authenticate', methods=["POST"])
         def handle_authenticate():
-            return "0"
+            j_data = request.get_json()
+
+            response = {
+                "clientToken": j_data["clientToken"],
+                "accessToken": "random access token",
+                "availableProfiles": [
+                    {
+                        "name": "player username",
+                        "id": "hexadecimal string"
+                    }
+                ],
+                "selectedProfile": {
+                    "name": "player username",
+                    "id": "hexadecimal string"
+                }
+            }
+
+            return json.dumps(response)
 
         @self.core.route('/refresh', methods=["POST"])
         def handle_refresh():
@@ -91,10 +113,11 @@ class Solo(Server):
         def handle_signout():
             ...
 
-        @self.core.route('/validate', methods=["POST"])
+        @self.core.route('/invalidate', methods=["POST"])
         def handle_invalidate():
             ...
 
+        # Legacy Auth
         @self.core.route('/', methods=["POST"])
         def handle_legacy_authenticate():
             ...
@@ -103,9 +126,14 @@ class Solo(Server):
         def handle_legacy_session():
             ...
 
+        # Skin serving...
+        @self.core.route('/minecraft/profile', methods=["POST"])
+        def handle_skin():
+            ...
+
         if exists("shared/key.pub") and exists("shared/key.prv"):
             self.core.run(ssl_context=('shared/key.crt', 'shared/key.prv'), port=5000)  # Start hosting the server!
             return ExitStatus.success
         else:
-            self.core.run(ssl_context='adhoc', port=5000)
+            self.core.run(port=5000)
             return ExitStatus.missing_encryption_keys
