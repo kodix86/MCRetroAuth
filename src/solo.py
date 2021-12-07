@@ -77,7 +77,7 @@ class Solo(Server):
 
         @self.core.route('/authenticate', methods=["POST"])
         def handle_authenticate():
-            ...
+            return "0"
 
         @self.core.route('/refresh', methods=["POST"])
         def handle_refresh():
@@ -103,5 +103,9 @@ class Solo(Server):
         def handle_legacy_session():
             ...
 
-        self.core.run()  # Start hosting the server!
-        return ExitStatus.success
+        if exists("shared/key.pub") and exists("shared/key.prv"):
+            self.core.run(ssl_context=('shared/key.crt', 'shared/key.prv'), port=5000)  # Start hosting the server!
+            return ExitStatus.success
+        else:
+            self.core.run(ssl_context='adhoc', port=5000)
+            return ExitStatus.missing_encryption_keys

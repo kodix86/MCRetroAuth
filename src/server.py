@@ -3,10 +3,8 @@
 import requests
 from flask import Flask, request
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import get_jwt_identity
-from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
+from flask_sslify import SSLify
 import sqlite3
 
 
@@ -16,6 +14,7 @@ class Server:
         self.name = name
         self.core = Flask(name)
         self.core.config['SECRET_KEY'] = 'super-secret'  # REPLACE ME!
+        self.sslify = SSLify(self.core)
         self.b_crypt = Bcrypt(self.core)
         self.jwt = JWTManager(self.core)
         self.running = True

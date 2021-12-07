@@ -1,4 +1,6 @@
 Flask~=2.0.2
 flask_jwt_extended
 flask_bcrypt
+flask_sslify
 requests~=2.26.0
+pyopenssl

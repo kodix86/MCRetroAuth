@@ -9,3 +9,4 @@ class ExitStatus(Enum):
     invalid_params = 1
     invalid_username = 2
     auth_failure = 3
+    missing_encryption_keys = 4

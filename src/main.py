@@ -50,6 +50,6 @@ elif args.mode == "proxy":
 else:
     print("Unknown mode \"" + args.mode + "\" try solo or proxy.")
     exit_val = ExitStatus.invalid_params
-    exit(exit_val)
 
-exit(exit_val)
+print(exit_val)
+exit(exit_val.value)
